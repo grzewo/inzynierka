@@ -30,7 +30,15 @@ int main(void){
   
   while (1)
   {
-
+  ADC3ConvertedVoltage = ADC3ConvertedValue *3300/0xFFF;
+     uint32_t i=ADC3ConvertedVoltage;
+     cog_write_number(i%10,105,90);
+     i/=10;
+     cog_write_number(i%10,90,90);
+     i/=10;
+     cog_write_number(i%10,75,90);
+     i/=10;
+     cog_write_number(i%10,60,90);
   }
 }
 

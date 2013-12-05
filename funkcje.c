@@ -94,11 +94,11 @@ void Init_TIM(void) {
   TIM_OCInitTypeDef  TIM_OCInitStructure;
   
   uint16_t PrescalerValue = (uint16_t) ((SystemCoreClock / 2) / 100000) - 1;     //wartoœæ ustawiaj¹ca  czêstotliwoœæ
-  uint16_t CCR1_Val = 5000;             
-  uint16_t CCR2_Val = 10000;
+  uint16_t CCR1_Val = 28;             
+  uint16_t CCR2_Val = 40;
 
   //ustawienie podstawowych parametrów timera
-  TIM_TimeBaseStructure.TIM_Period = 20000-1;           //Okres 20 000 taktów ergo 2 sek przy 10 kHz
+  TIM_TimeBaseStructure.TIM_Period = 1000-1;           //Okres 20 000 taktów ergo 2 sek przy 10 kHz
   TIM_TimeBaseStructure.TIM_Prescaler = 0;              //ustawiany ni¿ej
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;       
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;   
