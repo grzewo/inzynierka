@@ -141,7 +141,8 @@ void TIM3_IRQHandler(void)
   if(TIM_GetITStatus(TIM3, TIM_IT_Update)!=RESET)
   {
     TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
-     STM_EVAL_LEDOn(LED4);
+     //STM_EVAL_LEDOn(LED4);
+     GPIOC->BSRRH = 3;
      //STM_EVAL_LEDOff(LED5);
      
     /* ADC3ConvertedVoltage = ADC3ConvertedValue *3300/0xFFF;
@@ -167,8 +168,8 @@ void TIM3_IRQHandler(void)
   else if (TIM_GetITStatus(TIM3, TIM_IT_CC2) != RESET)
   {
     TIM_ClearITPendingBit(TIM3, TIM_IT_CC2);
-    STM_EVAL_LEDOff(LED4);
-    
+    //STM_EVAL_LEDOff(LED4);
+    GPIOC->BSRRL = 3;
    }
 }
 
