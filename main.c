@@ -16,11 +16,6 @@ int main(void){
   wait_ms(100);          //Daj mu czas na start po resecie
   init_cog();
   
-  Init_TIM();
-  NVIC_Config();
-  Init_DMA();
-  Init_ADC();
-
   cog_write_string("Grzegorz",10,5);
   cog_write_string("jest",10,25);
   cog_write_string("miszczem",10,45);
@@ -28,10 +23,17 @@ int main(void){
  
   cog_write_string("V : ",10,90);
   
+  Init_TIM();
+  NVIC_Config();
+  Init_DMA();
+  Init_ADC();
+
+  
+
+  
   while (1)
   {
-  ADC3ConvertedVoltage = ADC3ConvertedValue *3300/0xFFF;
-     uint32_t i=ADC3ConvertedVoltage;
+     uint32_t i = ADC3ConvertedVoltage;
      cog_write_number(i%10,105,90);
      i/=10;
      cog_write_number(i%10,90,90);
@@ -39,6 +41,7 @@ int main(void){
      cog_write_number(i%10,75,90);
      i/=10;
      cog_write_number(i%10,60,90);
+    
   }
 }
 

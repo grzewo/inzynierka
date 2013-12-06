@@ -18,9 +18,9 @@ void Delay(__IO uint32_t nCount)
 
 void Init_RCC(void){
 
-
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2 | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC, ENABLE);
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+  
+  RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_DMA2 | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC, ENABLE);
+  RCC_APB1PeriphClockCmd(/*RCC_APB1Periph_TIM4 |*/ RCC_APB1Periph_TIM3 , ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC3, ENABLE);
 }
 
@@ -46,7 +46,6 @@ void Init_RCC(void){
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
   
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
@@ -54,11 +53,7 @@ void Init_RCC(void){
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-  STM_EVAL_LEDInit(LED4);
-  STM_EVAL_LEDInit(LED3);
-  STM_EVAL_LEDInit(LED5);
-  STM_EVAL_LEDInit(LED6);
-  }
+}
 
 
 
@@ -102,8 +97,8 @@ void Init_TIM(void) {
   TIM_OCInitTypeDef  TIM_OCInitStructure;
   
   uint16_t PrescalerValue = (uint16_t) ((SystemCoreClock / 2) / 100000) - 1;     //wartoœæ ustawiaj¹ca  czêstotliwoœæ
-  uint16_t CCR1_Val = 28;             
-  uint16_t CCR2_Val = 40;
+  __IO uint16_t CCR1_Val = 28;             
+  __IO uint16_t CCR2_Val = 40;
 
   //ustawienie podstawowych parametrów timera
   TIM_TimeBaseStructure.TIM_Period = 1000-1;           //Okres 20 000 taktów ergo 2 sek przy 10 kHz
@@ -113,7 +108,7 @@ void Init_TIM(void) {
 
   TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
 
-  TIM_PrescalerConfig(TIM3, PrescalerValue, TIM_PSCReloadMode_Immediate); //ustawia f = 10 kHz
+  TIM_PrescalerConfig(TIM3, PrescalerValue, TIM_PSCReloadMode_Immediate); //ustawia f = 100 kHz
  
  //ustawienia kana³u 1. 
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Timing;
@@ -132,6 +127,20 @@ void Init_TIM(void) {
   //w³¹czenie przerwañ i licznika
   TIM_ITConfig(TIM3, TIM_IT_Update | TIM_IT_CC1 | TIM_IT_CC2, ENABLE);
   TIM_Cmd(TIM3, ENABLE);
+  
+  /*
+  //Timer 4 do wyœwietlania wyników co 1 s
+  uint16_t PrescalerVal = (uint16_t) ((SystemCoreClock / 2) / 10000) - 1; 
+  TIM_TimeBaseStructure.TIM_Period = 1000-1;           //Okres 100 taktów ergo 1 sek przy 100 Hz
+  TIM_TimeBaseStructure.TIM_Prescaler = 0;              //ustawiany ni¿ej
+  TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;       
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+
+  TIM_PrescalerConfig(TIM4,PrescalerVal , TIM_PSCReloadMode_Immediate);
+  
+  TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);
+  TIM_Cmd(TIM4, ENABLE);*/
 }
 
 void NVIC_Config(void)
@@ -143,7 +152,13 @@ void NVIC_Config(void)
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
-
+  /*
+  NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+*/
 }
 
 void Init_DMA(){
@@ -182,7 +197,7 @@ void Init_ADC(void)
   
   ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;
   ADC_InitStructure.ADC_ScanConvMode = DISABLE;
-  ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
+  ADC_InitStructure.ADC_ContinuousConvMode = DISABLE;
   ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
   ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
   ADC_InitStructure.ADC_NbrOfConversion = 1;  
